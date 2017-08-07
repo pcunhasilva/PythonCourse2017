@@ -1,4 +1,6 @@
 def binarify(num):
+    if num<=0: return '0'
+
     number = []
 
     while num != 0:
@@ -8,9 +10,8 @@ def binarify(num):
         else:
             number.append(1)
             num = num / 2
-
     result = [str(i) for i in number]
-    return ''.join(result)
+    return ''.join(result[::-1])
 
 print "Test to convert 357 to base 2"
 print binarify(357)
@@ -20,6 +21,7 @@ print binarify(69)
 #############
 
 def int_to_base(num, base):
+    if num<=0:  return '0'
     number = []
     if num <= 0:
         return "Not possible"
@@ -31,9 +33,8 @@ def int_to_base(num, base):
             else:
                 number.append(num % base)
                 num = num / base
-
     result = [str(i) for i in number]
-    return ''.join(result)
+    return ''.join(result[::-1])
 
 print "Test to convert 357 to base 3"
 print int_to_base(357, 3)
@@ -43,6 +44,8 @@ print int_to_base(69, 7)
 #############
 
 def base_to_int(string, base):
+    if string=="0" or base <= 0 : return 0
+
     base_ori = int(base)
     base_exp = len(string) - 1
     result = 0
