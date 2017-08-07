@@ -60,7 +60,6 @@ print base_to_int("111020", 3)
 ##########
 
 def flexibase_add(str1, str2, base1, base2):
-  """add two numbers of different bases and return the sum"""
   return base_to_int(str1, base1) + base_to_int(str2, base2)
 
 print "Add 11101 (base 2) to 111020 (base 3)"
@@ -68,61 +67,64 @@ print flexibase_add("11101", "111020", 2, 3)
 
 #######
 def flexibase_multiply(str1, str2, base1, base2):
-  """multiply two numbers of different bases and return the product"""
   return base_to_int(str1, base1) * base_to_int(str2, base2)
 
-print "multiply 11101 (base 2) to 111020 (base 3)"
+print "Multiply 11101 (base 2) to 111020 (base 3)"
 print flexibase_multiply("11101", "111020", 2, 3)
 
 #######
 def romanify(num):
-  """given an integer, return the Roman numeral version"""
-  result = []
-  while num != 0:
-     if num >= 1000:
-          result.append("M")
-          num -= 1000
-     elif num >= 900:
-          result.append("CM")
-          num -= 900
-     elif num >= 500:
-          result.append("D")
-          num -= 500
-     elif num >= 400:
-          result.append("CD")
-          num -= 400
-     elif num >= 100:
-         result.append("C")
-         num -= 100
-     elif num >= 90:
-         result.append("XC")
-         num -= 90
-     elif num >= 50:
-         result.append("L")
-         num -= 50
-     elif num >= 40:
-         result.append("XL")
-         num -= 40
-     elif num >= 10:
-         result.append("X")
-         num -= 10
-     elif num == 9:
-         result.append("IX")
-         num -= 9
-     elif num in (8, 7, 6, 5):
-         result.append("V")
-         num -= 5
-     elif num == 4:
-         result.append("IV")
-         num -= 4
-     elif num in (3, 2, 1):
-         result.append("I")
-         num -= 1
-     else:
-         break
+  if num <= 0:
+      return "Please provide a positive integer"
+  else:
+      result = []
+      while num != 0:
+         if num >= 1000:
+              result.append("M")
+              num -= 1000
+         elif num >= 900:
+              result.append("CM")
+              num -= 900
+         elif num >= 500:
+              result.append("D")
+              num -= 500
+         elif num >= 400:
+              result.append("CD")
+              num -= 400
+         elif num >= 100:
+             result.append("C")
+             num -= 100
+         elif num >= 90:
+             result.append("XC")
+             num -= 90
+         elif num >= 50:
+             result.append("L")
+             num -= 50
+         elif num >= 40:
+             result.append("XL")
+             num -= 40
+         elif num >= 10:
+             result.append("X")
+             num -= 10
+         elif num == 9:
+             result.append("IX")
+             num -= 9
+         elif num in (8, 7, 6, 5):
+             result.append("V")
+             num -= 5
+         elif num == 4:
+             result.append("IV")
+             num -= 4
+         elif num in (3, 2, 1):
+             result.append("I")
+             num -= 1
+         else:
+             break
   return ''.join(result)
 
 print "Convert 1001 to Roman"
 print romanify(1001)
 print "Convert 3549 to Roman"
 print romanify(3549)
+print "Try to convert 0, it will return an error."
+print romanify(0)
