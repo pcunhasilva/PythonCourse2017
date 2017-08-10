@@ -1,4 +1,4 @@
-from random import uniform
+from random import uniform, seed
 
 class Portfolio():
     """A client's portfolio of a financial institution.
@@ -65,7 +65,7 @@ class Portfolio():
 
     def buyStock(self, share, obj):
         if (share - int(share)) != 0:
-            raise RuntimeError('Only units can be bought')
+            print 'Only whole units can be bought'
         name = obj.name
         self.addProduct(share, name, obj.sales_price, "Stock")
         self.withdrawCash(round(share * obj.purchase_price, 2))
@@ -76,7 +76,7 @@ class Portfolio():
 
     def sellMutualFund(self, share, name):
         if share > self.mutualFund[name][0]:
-            raise RuntimeError('Not enought shares available')
+            print 'Not enought shares available'
         self.remProduct(share, name, "MutualFund")
         price = self.mutualFund[name][1]
         self.addCash(round(share * price, 2))
@@ -87,9 +87,9 @@ class Portfolio():
 
     def sellStock(self, share, name):
         if (share - int(share)) != 0:
-            raise RuntimeError('Only units can be sold')
+            print 'Only whole units can be sold'
         if share > self.stock[name][0]:
-            raise RuntimeError('Not enought shares available')
+            print 'Not enought shares available'
         self.remProduct(share, name, "Stock")
         price = self.stock[name][1]
         self.addCash(round(share * price, 2))
@@ -142,7 +142,9 @@ class Stock():
     def __str__(self):
         return self.name
 
-
+# Test the functions using the examples in the HW.
+# Set a seed to always have the same values
+seed(1)
 print "Creates a new portfolio"
 portfolio =  Portfolio()
 print "Adds cash to the portfolio"
@@ -169,3 +171,4 @@ print "Removes $ 50"
 portfolio.withdrawCash(50)
 print "Prints a list of all transactions"
 portfolio.history()
+print portfolio
