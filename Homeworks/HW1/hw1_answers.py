@@ -64,10 +64,12 @@ class Portfolio():
             self.hist.extend([str(share) + " shares of " + name + " purchased"])
 
     def buyStock(self, share, obj):
+        if (share - int(share)) != 0:
+            raise RuntimeError('Only units can be bought')
         name = obj.name
         self.addProduct(share, name, obj.sales_price, "Stock")
         self.withdrawCash(round(share * obj.purchase_price, 2))
-        if share == 1:
+        if share in (1, 1.0):
             self.hist.extend([str(1) + " share of " + name + " purchased"])
         else:
             self.hist.extend([str(share) + " shares of " + name + " purchased"])
@@ -84,6 +86,8 @@ class Portfolio():
             self.hist.extend([str(share) + " shares of " + name + " sold"])
 
     def sellStock(self, share, name):
+        if (share - int(share)) != 0:
+            raise RuntimeError('Only units can be sold')
         if share > self.stock[name][0]:
             raise RuntimeError('Not enought shares available')
         self.remProduct(share, name, "Stock")
@@ -159,85 +163,9 @@ print "Prints portfolio"
 print portfolio
 print "Sells 3 shares of 'BRT'"
 portfolio.sellMutualFund(3, "BRT")
+print "Sells 1 share of HFH"
+portfolio.sellStock(1, "HFH")
 print "Removes $ 50"
 portfolio.withdrawCash(50)
 print "Prints a list of all transactions"
 portfolio.history()
-# portfolio.sellMutualFund()
-#
-#
-#
-# print portfolio.history
-# print portfolio
-# print "Test to subtract cash to portfolio and print"
-# portfolio.withdrawCash(100)
-# print portfolio
-# print "Generate a Mutual Fund and print"
-# mf1 = MutualFund("Test")
-# print mf1
-# print "Buy 40 shares of a Mutual Fund and print"
-# portfolio.buyMutualFund(40, mf1)
-# x = portfolio.mutualFund
-# print x
-# print "Sell 20 shares of a Mutual Fund and print"
-# portfolio.sellMutualFund(20, mf1)
-# x = portfolio.mutualFund
-# print x
-# print portfolio
-# print "Generate a Stock  and print"
-# s1 = Stock("TestStock")
-# print s1
-# print "Buy 40 shares of Stock and print"
-# portfolio.buyStock(40, s1)
-# x = portfolio.stock
-# print x
-# print portfolio
-# print "Sell 20 shares of Stock and print"
-# portfolio.sellStock(20, s1)
-# x = portfolio.stock
-# print x
-# print portfolio
-# print portfolio.history
-
-
-
-# Generate Abstract Class Product
-# class Product():
-#
-#     """Attibute:
-#             name: A string representing the name of the product.
-#             purchase_price: A float representing the purchase price.
-#             sale_price: A float representing the sales price.
-#
-#     """
-#     _metaclass_ = ABCMeta
-#
-#     initial = 0
-#     final = 0
-#
-#     def __init__(self, name, purchase_price = None):
-#         self.name = name
-#         self.purchase_price = purchase_price
-#         self.sale_price = uniform(initial * self.purchase_price, final * self.purchase_price)
-#
-#     @abstractmethod
-#     def product_type(self):
-#         """Return a string representing the type of investiment this is."""
-#         pass
-#
-# class MutualFund(Product):
-#     """A Mutual Fund available in a financial institution"""
-#
-#     base_buy = 1
-#     initial = 0.9
-#     final = 1.2
-#
-#     def __str__(self):
-#         return self.name
-#
-#     def product_type(self):
-#         """ Return a string representing the type of investiment this is."""
-#         return 'MutualFund'
-#
-# p1 = Product("ENM")
-# print p1
