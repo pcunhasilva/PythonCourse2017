@@ -56,6 +56,8 @@ class Portfolio():
     def buyInvestment(self, share, investment):
         """Add an asset to the portfolio"""
 
+        if share <= 0: raise ValueError ("Please insert a positive number.")
+
         if investment.investment_type() == 'stock' and \
         (share - int(share)) != 0:
             raise ValueError ('Stocks can only be bought as whole units')
@@ -91,6 +93,8 @@ class Portfolio():
 
     def sellInvestment(self, share, name):
         """ Sell an assets in a portfolio """
+
+        if share <= 0: raise ValueError ("Please insert a positive number.")
 
         investtype = self.InvestmentUnique(name)
 
