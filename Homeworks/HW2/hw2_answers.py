@@ -5,7 +5,7 @@ import re
 import csv
 
 # Generate the links to the main.
-# There are only 2 pages of petitions. I gen
+# There are only 3 pages of petitions.
 url1 = ["https://petitions.whitehouse.gov/petitions?page=" + str(i) for i in range(0, 3)]
 
 # Read the pages and collect the petitions' urls.
@@ -41,19 +41,33 @@ for i in url2:
         tags.append(g)
     else: tags.append(soup.find("article").find("h6").text)
 
-# Remove special characters from the data:
-#re.sub('[^a-zA-Z0-9-_*.]', '', my_string)
-#title2 = [text.encode("utf8") for text in title]
+# Clean date
+date2 = [date[i].split(" on ")[1] for i in range(0, len(date))]
+
+# Remove special characters from the issues:
+# issues2 = [re.sub(r'[^\s\w_]+', '', issues[i]) for i in range(0, len(issues))]
+issues2 = [re.sub('[^a-zA-Z0-9\\\/ #]|_', '', \
+    issues[i]) for i in range(0, len(issues))]
+
+# Merge mutilple tags into one
+tags2 = []
+for i in range(0, len(tags)):
+    # bc = 'on' if c.page=='blog' else 'off'
+    if len(tags[i]) == 1 or len(tags[i]) > 5:
+        tags2.append(tags[i])
+    else:
+        tags2.append(", ".join(str(x) for x in tags[i]))
+
+# Encode titles
+title2 = [text.encode("utf8") for text in title]
 
 # Put everything in a .csv file
 with open('data_petitions.csv', 'wb') as f:
   my_writer = csv.DictWriter(f, fieldnames=("Title", "Date",
    "Issues", "Signatures", "Tags", "Url"))
   my_writer.writeheader()
-  issues2 = [text.encode("utf8") for text in issues]
-  title2 = [text.encode("utf8") for text in title]
   for i in range(0, len(url2)):
-    my_writer.writerow({"Title":title2[i], "Date":date[i],
+    my_writer.writerow({"Title":title2[i], "Date":date2[i],
 	"Issues":issues2[i], "Signatures":sign[i],
-    "Tags":tags[i], "Url": url2[i]})
+    "Tags":tags2[i], "Url": url2[i]})
   print "File Saved"
