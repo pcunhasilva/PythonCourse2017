@@ -1,38 +1,52 @@
 import tweepy
 import time
+import pandas as pd
 
 #Get access to API
-auth = tweepy.OAuthHandler('your consumer key', 'your consumer secret')
-auth.set_access_token('your access token', 'your access token secret')
+
 api = tweepy.API(auth, wait_on_rate_limit = True)
 
 #Create user objects
 nyupolitics = api.get_user('NYUpolitics')
 
 # Collect the data to answer the first 4 questions:
-follower_names = []
-follower_ntweets = []
-follower_nfollowers = []
-for user in tweepy.Cursor(api.followers, screen_name = 'NYUpolitics', count = 200, include_entities = True).items():
-    try:
-        follower_names.append(user.screen_name)
-        follower_ntweets.append(user.statuses_count)
-        follower_nfollowers.append(user.followers_count)
-    except tweepy.TweepError:
-        time.sleep(900)
-        continue
+def getdatauser(twitteruser, relationship):
+    names = []
+    ntweets = []
+    nfollowers = []
+    for user in tweepy.Cursor(getattr(api, relationship), screen_name = twitteruser, count = 200, include_entities = True).items():
+        try:
+            names.append(user.screen_name)
+            ntweets.append(user.statuses_count)
+            nfollowers.append(user.followers_count)
+        except tweepy.TweepError:
+            time.sleep(900)
+            # sleep then try to collect the data again.
+            names.append(user.screen_name)
+            ntweets.append(user.statuses_count)
+            nfollowers.append(user.followers_count)
+    # put everything in a dataset:
+    return pd.DataFrame({"names":names, "ntweets": ntweets, "nfollowers":nfollowers})
 
-friend_names = []
-friend_ntweets = []
-friend_nfollowers = []
-for user in tweepy.Cursor(api.friends, screen_name = 'NYUpolitics', count = 200, include_entities = True).items():
-    try:
-        friend_names.append(user.screen_name)
-        friend_ntweets.append(user.statuses_count)
-        friend_nfollowers.append(user.followers_count)
-    except tweepy.TweepError:
-        time.sleep(900)
-        continue
+# Get followers data:
+datafollowers = getdatauser('NYUpolitics', 'followers')
+# Get friends data:
+datafriends = getdatauser('NYUpolitics', 'friends')
+
+# Generate a function that classify users.
+def usertype(nfollowers):
+    typeuser = []
+    for i in range(0, len(nfollowers)):
+        if nfollowers[i] < 101: typeuser.append("layman")
+        if nfollowers[i] >= 101 and nfollowers[i] < 1000: typeuser.append("expert")
+        if nfollowers[i] >= 1000: typeuser.append("celebrity")
+    return typeuser
+
+typeuser = usertype(datafriends['nfollowers'])
+
+
+
+
 
 # Question 1
 print """Among the followers of your target who is the most active?
@@ -125,3 +139,15 @@ frfrnames = friend_names + friendOf_names
 frfrntweets = friend_ntweets + friendOf_ntweets
 print """The most active user among friends and friends of friends
 is: %s""" % frfrnames[frfrntweets.index(max(frfrntweets))]
+
+test = followerOf_names
+test[followerOf_names]
+test.append[followerOf_ntweets]
+
+
+######
+
+df = pd.DataFrame(followerOf_names, )
+df["B"] = followerOf_ntweets
+df.columns = ['names', 'n_tweets']
+df.to_csv("twitter_friend.csv", sep=';')
