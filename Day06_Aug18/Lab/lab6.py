@@ -9,7 +9,7 @@ def gcd(num1, num2):
 #Exercise 2
 #Write a function that returns prime numbers less than 121
 def findprime(num):
-    if num == 0:
+    if num == 1:
         return None
     i = 1
     remainder = []
