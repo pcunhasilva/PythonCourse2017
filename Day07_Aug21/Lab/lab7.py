@@ -134,38 +134,31 @@ print findPath(movies, jr, ms)
 # TODO: implement findShortestPath()
 # print findShortestPath(movies, ms, ss)
 def findShortestPath(graph, start, end, path = []):
-    x = findAllPaths(graph, start, end, path)
+    x = findAllPaths2(graph, start, end, path)
     lengs = [len(i) for i in x]
     return x[lengs.index(min(lengs))]
 
 # TODO: implement findAllPaths() to find all paths between two nodes
-
-# This function is capable to find all paths from the start, and all
-# different paths from the second node. However, it is not capable to find
-# all possible paths if the third node has more than one possible path.
 import pandas as pd
-
-def findAllPaths(graph, start, end, path = []):
+def findAllPaths(graph, start, end, path=[]):
     if 'paths' not in globals():
         global paths
         paths = []
-    if end in graph[start]: paths.append(path + [start] + [end])
+    path = path + [start]
+    if start == end:
+        paths.append(path)
+    if not graph.has_key(start):
+        return None
     for node in graph[start]:
-        path = []
-        path = path + [start]
-        for subnode in graph[node]:
-            if subnode != start:
-                    path = path + [node]
-                    paths.append(findPath(graph, subnode, end, path))
-    paths = filter(None, paths)
-    for i in range(0, len(paths)):
-        paths[i] = pd.Series(paths[i]).drop_duplicates().tolist()
-    result = paths
-    del globals()['paths']
-    return result
+        if node not in path:
+            findAllPaths(graph, node, end, path)
+    paths = pd.DataFrame(paths).drop_duplicates().values.tolist()
+    for i in range(len(paths)):
+        paths[i] = filter(None, paths[i])
+    return paths
 
+# allPaths = findAllPaths(movies, jr, ms)
 
-# allPaths = findAllPaths2(movies, jr, ms)
 # for path in allPaths:
 #   print path
 
