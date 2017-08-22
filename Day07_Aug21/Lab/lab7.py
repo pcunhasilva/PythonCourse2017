@@ -23,8 +23,7 @@ for i in range(n):
 print len(ring)
 
 # How many edges?
-print sum([len(ring[node]) for node in ring.keys()])/2
-
+print sum([len(square[node]) for node in square.keys()])/2
 
 # Grid Network
 # TODO: create a square graph with 256 nodes and count the edges
@@ -52,8 +51,7 @@ def countEdges(graph):
     for i in f.keys():
         for j in f[i].keys():
             k.append([i, j])
-    for i in range(0, len(k)):
-        k[i].sort()
+    for i in range(0, len(k)): k[i].sort()
     unique = set(map(tuple, k))
     return len(unique)
 
@@ -145,18 +143,20 @@ def findShortestPath(graph, start, end, path = []):
 # This function is capable to find all paths from the start, and all
 # different paths from the second node. However, it is not capable to find
 # all possible paths if the third node has more than one possible path.
+import pandas as pd
+
 def findAllPaths(graph, start, end, path = []):
     if 'paths' not in globals():
         global paths
         paths = []
-    if end in movies[start]: paths.append(path + [start] + [end])
-    for node in movies[start]:
+    if end in graph[start]: paths.append(path + [start] + [end])
+    for node in graph[start]:
         path = []
         path = path + [start]
-        for subnode in movies[node]:
+        for subnode in graph[node]:
             if subnode != start:
                     path = path + [node]
-                    paths.append(findPath(movies, subnode, end, path))
+                    paths.append(findPath(graph, subnode, end, path))
     paths = filter(None, paths)
     for i in range(0, len(paths)):
         paths[i] = pd.Series(paths[i]).drop_duplicates().tolist()
@@ -164,7 +164,8 @@ def findAllPaths(graph, start, end, path = []):
     del globals()['paths']
     return result
 
-# allPaths = findAllPaths(movies, jr, ms)
+
+# allPaths = findAllPaths2(movies, jr, ms)
 # for path in allPaths:
 #   print path
 
