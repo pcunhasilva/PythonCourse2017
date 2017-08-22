@@ -23,7 +23,7 @@ for i in range(n):
 print len(ring)
 
 # How many edges?
-print sum([len(square[node]) for node in square.keys()])/2
+print sum([len(ring[node]) for node in ring.keys()])/2
 
 # Grid Network
 # TODO: create a square graph with 256 nodes and count the edges
@@ -141,20 +141,17 @@ def findShortestPath(graph, start, end, path = []):
 # TODO: implement findAllPaths() to find all paths between two nodes
 import pandas as pd
 def findAllPaths(graph, start, end, path=[]):
-    if 'paths' not in globals():
-        global paths
-        paths = []
     path = path + [start]
     if start == end:
-        paths.append(path)
+        return [path]
     if not graph.has_key(start):
         return None
+    paths = []
     for node in graph[start]:
         if node not in path:
-            findAllPaths(graph, node, end, path)
-    paths = pd.DataFrame(paths).drop_duplicates().values.tolist()
-    for i in range(len(paths)):
-        paths[i] = filter(None, paths[i])
+            p = findAllPaths(graph, node, end, path)
+            for i in p:
+                paths.append(i)
     return paths
 
 # allPaths = findAllPaths(movies, jr, ms)
