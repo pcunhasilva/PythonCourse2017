@@ -134,12 +134,11 @@ print findPath(movies, jr, ms)
 # TODO: implement findShortestPath()
 # print findShortestPath(movies, ms, ss)
 def findShortestPath(graph, start, end, path = []):
-    x = findAllPaths2(graph, start, end, path)
+    x = findAllPaths(graph, start, end, path)
     lengs = [len(i) for i in x]
     return x[lengs.index(min(lengs))]
 
 # TODO: implement findAllPaths() to find all paths between two nodes
-import pandas as pd
 def findAllPaths(graph, start, end, path=[]):
     path = path + [start]
     if start == end:
