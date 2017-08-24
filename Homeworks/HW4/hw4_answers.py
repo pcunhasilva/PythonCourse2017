@@ -18,9 +18,8 @@ def selection(nlist):
 
 # Counting method:
 def counting(nlist):
-    unsortedlist = nlist
-    indexarray = range(min(unsortedlist), max(unsortedlist) + 1)
-    countarray = [unsortedlist.count(i) for i in indexarray]
+    indexarray = range(min(nlist), max(nlist) + 1)
+    countarray = [nlist.count(i) for i in indexarray]
     newcount = [None] * len(countarray)
     n = 0
     total = 0
@@ -29,9 +28,8 @@ def counting(nlist):
         d = countarray[n]
         total += countarray[n]
         n += 1
-    # Part 3
-    sortedlist = [None] * len(unsortedlist)
-    for i in unsortedlist:
+    sortedlist = [None] * len(nlist)
+    for i in nlist:
         sortedlist[newcount[indexarray.index(i)]] = i
         newcount[indexarray.index(i)] += 1
     return sortedlist
@@ -44,31 +42,80 @@ def wrapper(function, *args):
     return wrapped
 
 # Generate simulate()
-def simulate(function, samplelist, times):
+def simulate(function, samplesize, low = 0, high = 100, times = 1):
     results = []
-    for i in samplelist:
+    for i in samplesize:
         np.random.seed(1)
-        sample = np.random.randint(-1000000, 1000000, i).tolist()
+        sample = np.random.randint(low, high, i).tolist()
         wrapped = wrapper(function, sample)
         results.append(timeit.timeit(wrapped, number = times))
-    return pd.DataFrame({"samplesize":samplelist, "runtime":results})
+    return pd.DataFrame({"samplesize":samplesize, "runtime":results})
 
 
-# Generate a list with the sample sizes:
-samplesize = [5, 10, 50, 100, 1000, 10000, 100000]
+# Generate a list with the sample sizes for the first simulation:
+samplesize1 = range(1, 1001)
 
-# Run simulate for counting() and save the dataset
-countingsim = simulate(counting, samplesize, 1)
+# Run the first simulation for counting() and save the dataset
+countingsim1 = simulate(counting, samplesize1, -10, 10, 3)
 
-# Run simulate for selection() and save the dataset
-selectionsim = simulate(selection, samplesize, 1)
+# Run the first simulation for selection() and save the dataset
+selectionsim1 = simulate(selection, samplesize1, -10, 10, 3)
 
-# Plot the results
-countingsort, = plt.plot(countingsim.samplesize, countingsim.runtime, 'r-',
+# Plot the results for the first simulation and save the figure
+f = plt.figure()
+countingsort, = plt.plot(countingsim1.samplesize, countingsim1.runtime, 'r-',
                 label = "Counting Sort")
-selectionsort, = plt.plot(selectionsim.samplesize, selectionsim.runtime, 'b-',
+selectionsort, = plt.plot(selectionsim1.samplesize, selectionsim1.runtime, 'b-',
                 label = "Selection Sort")
 plt.xlabel('Sample Size')
 plt.ylabel('Time (in seconds)')
-plt.title('Comparison between selection and counting sort')
+plt.title('Scenario 1: Many repeated numbers in the sample')
 plt.legend(handler_map={countingsort: HandlerLine2D(numpoints=1)})
+plt.show()
+f.savefig("scenario1.pdf", bbox_inches='tight')
+plt.close()
+
+# Run the second simulation for counting() and save the dataset
+countingsim2 = simulate(counting, samplesize1, -100, 100, 3)
+
+# Run the first simulation for selection() and save the dataset
+selectionsim2 = simulate(selection, samplesize1, -100, 100, 3)
+
+# Plot the results for the first simulation and save the figure
+f = plt.figure()
+countingsort, = plt.plot(countingsim2.samplesize, countingsim2.runtime, 'r-',
+                label = "Counting Sort")
+selectionsort, = plt.plot(selectionsim2.samplesize, selectionsim2.runtime, 'b-',
+                label = "Selection Sort")
+plt.xlabel('Sample Size')
+plt.ylabel('Time (in seconds)')
+plt.title('Scenario 2: Less repeated numbers in the sample')
+plt.legend(handler_map={countingsort: HandlerLine2D(numpoints=1)})
+plt.show()
+f.savefig("scenario2.pdf", bbox_inches='tight')
+plt.close()
+
+# Generate a new list with the sample sizes for the third simulation.
+# This list is smaller than the first one to make the simulation possible
+# in a reasonable amount of time.
+samplesize2 = range(1, 101)
+
+# Run the first simulation for counting() and save the dataset
+countingsim3 = simulate(counting, samplesize2, -100000, 100000, 3)
+
+# Run the first simulation for selection() and save the dataset
+selectionsim3 = simulate(selection, samplesize2, -100000, 100000, 3)
+
+# Plot the results for the first simulation and save the figure
+f = plt.figure()
+countingsort, = plt.plot(countingsim3.samplesize, countingsim3.runtime, 'r-',
+                label = "Counting Sort")
+selectionsort, = plt.plot(selectionsim3.samplesize, selectionsim3.runtime, 'b-',
+                label = "Selection Sort")
+plt.xlabel('Sample Size')
+plt.ylabel('Time (in seconds)')
+plt.title('Scenario 3: Almost none repeated number in the sample')
+plt.legend(handler_map={countingsort: HandlerLine2D(numpoints=1)})
+plt.show()
+f.savefig("scenario3.pdf", bbox_inches='tight')
+plt.close()
